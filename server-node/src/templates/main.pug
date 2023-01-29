@@ -9,9 +9,9 @@ html
     script.
       function addMessage() {
         const xhr = new XMLHttpRequest()
-        const uri =  '!{apiUrl + '/add-new-message'}'
+        const url =  '!{apiUrl + '/add-new-message'}'
 
-        xhr.open('POST', uri)
+        xhr.open('POST', url)
         xhr.setRequestHeader('Content-type', 'application/json')
         const inputText = document.getElementById('input-text')
         const inputAuthor = document.getElementById('input-author')
@@ -21,7 +21,7 @@ html
               author: inputAuthor.value,
              }))
         xhr.onload = () => {
-          if (Number(xhr.responseText) !== 201) {
+          if (Number(xhr.status) !== 201) {
             alert('Произошла ошибка при отправке.')
           } else {
             inputText.value = ''

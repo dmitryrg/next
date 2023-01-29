@@ -12,11 +12,12 @@
 </template>
 
 <script>
+const config  = require('./config.js')
 export default {
   name: 'App',
   computed: {
     urlPublic() {
-      return 'http://localhost:3002/public/message-board'
+      return `${config.serverSideRenderUrl}/message-board`
     }
   }
 }

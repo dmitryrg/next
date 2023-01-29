@@ -22,26 +22,36 @@ app.use(bodyParser({ jsonLimit: '56kb' }))
 const router = new Router()
 
 const pug = require('pug')
-
+const config = require('./config.js')
+const {apiUrl,clientSideRenderUrl,serverSideRenderUrl} = config
 const messages =[ {author: 'Ivan', text: 'The sun is shining brightly'}]
+const calculations = [0,2,4,8,10]
 router.get('/public/message-board', async ctx => {
-  ctx.body = pug.renderFile('./templates/main.pug',{messages, apiUrl:'http://localhost:3002', clientSideRenderUrl:'http://localhost:8080/#/private',serverSideRenderUrl:'http://localhost:3002/public',})
+  ctx.body = pug.renderFile('./templates/main.pug',{messages, apiUrl, clientSideRenderUrl, serverSideRenderUrl})
 })
 
-router.post('/add-new-message', async ctx => {
+router.post('/api/add-new-message', ctx => {
   const {text,author} = ctx.request.body
   console.log('{text,author} ->', {text,author}); // debug
   messages.push({text,author} )
 
-  ctx.body = 201
+  ctx.body = 'success'
+  ctx.status = 201
 })
 
-router.put('/user/:userId', async ctx => {
-  // то, что написано через двоеточие, можем вытащить через ctx.papams.
-  console.log('ctx.request.body ->', await ctx.request.body) // debug
-  console.log('userId ->', ctx.params.userId) // debug
-  // console.log('ctx.body ->', ctx.body) // debug
-  ctx.response.body = 'ok3'
+router.get('/api/history', ctx => {
+  ctx.body = calculations.reduce((total,digit, index)=>{
+    if(index ===0) return total
+    total.push(    {id: index,
+    current:calculations[index],
+    previous:calculations[index-1],
+    average:(calculations[index]+ calculations[index-1])/2
+    })
+
+    return total
+  },[])
+  ctx.status = 201
+
 })
 
 // подцепляем роутер

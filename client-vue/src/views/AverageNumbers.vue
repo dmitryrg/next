@@ -1,58 +1,56 @@
 <template lang="pug">
 div
   div
-    input(type="text" @input="search = $event.target.value")
-    button(type="button" @click="findUsers") Найти
-    p(v-show="!hasData && users !== null && !isError") Не найдено
-    p(v-if="isError") {{users.err.message}}
+    //input(type="text" @input="search = $event.target.value")
+    //button(type="button" @click="findUsers") Найти
+    p(v-show="!hasData && calculations !== null && !isError") Не найдено
+    p(v-if="isError") {{calculations.err.message}}
     table(v-if="hasData")
       thead
         tr
           th
-            span Имя
+            span Введенное
           th
-            span Фамилия
+            span Предыдущее
           th
+            span Среднее
       tbody
-        tr(v-for='user of users' :key='user.id')
+        tr(v-for='calculation of calculations' :key='calculation.id')
           td
-            span  {{ user.firstName }}
+            span  {{ calculation.current }}
           td
-            span  {{ user.lastName }}
+            span  {{ calculation.previous }}
+          td
+            span  {{ calculation.average }}
 </template>
 
 <script>
-// import axios from 'axios'
-
+import axios from 'axios'
+const config = require('../config.js')
 export default {
-  name: 'UsersTop',
+  name: 'AverageNumbers',
   data: () => {
     return {
-      users: [
-        {firstName:'Violetta', lastName:'Apple'}
-      ],
-      search: ''
+      calculations: null
     }
   },
   computed: {
     hasData() {
-      return Array.isArray(this.users) && this.users.length > 0
+      return Array.isArray(this.calculations) && this.calculations.length > 0
     },
     isError() {
-      return this.users !== null && !Array.isArray(this.users)
+      return this.calculations !== null && !Array.isArray(this.calculations)
     }
   },
+  mounted() {
+    this.load()
+  },
   methods: {
-    findUsers() {
-/*      const URL = 'http://localhost:3002/users'
+    load() {
       axios
-        .post(URL, { search: this.search }) // search - строка квери запроса
+        .get(config.apiUrl + '/history')
         .then(response => response.data)
-        .then(users => (this.users = users))*/
-      this.users = [
-        {firstName:'Fedor', lastName:'Sumkin'},
-        {firstName:'Stepan', lastName:'Razin'}
-      ]
+        .then(calculations => (this.calculations = calculations))
     }
   }
 }
