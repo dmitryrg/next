@@ -3,12 +3,10 @@
     nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
       div#navbarCollapse.collapse.navbar-collapse
         ul.navbar-nav.mr-auto
-          router-link.nav-item(to="/private/" tag="li" exact="")
-            a.nav-link About
-          router-link.nav-item(to="/private/users" tag="li")
-            a.nav-link Users
           li.nav-item
-            a.nav-link(:href="urlCeo") CEO
+            a.nav-link(:href="urlPublic") message board
+          router-link.nav-item(to="/private/average-numbers" tag="li")
+            a.nav-link average numbers
     main.container(role="main")
       router-view
 </template>
@@ -17,8 +15,8 @@
 export default {
   name: 'App',
   computed: {
-    urlCeo() {
-      return 'http://localhost:3002/public/ceo'
+    urlPublic() {
+      return 'http://localhost:3002/public/message-board'
     }
   }
 }

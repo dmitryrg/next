@@ -6,14 +6,47 @@ html
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width,initial-scale=1.0")
     link(rel="stylesheet", href="/bootstrap.css")
+    script.
+      function addMessage() {
+        const xhr = new XMLHttpRequest()
+        const uri =  '!{apiUrl + '/add-new-message'}'
+
+        xhr.open('POST', uri)
+        xhr.setRequestHeader('Content-type', 'application/json')
+        const inputText = document.getElementById('input-text')
+        const inputAuthor = document.getElementById('input-author')
+        xhr.send(
+            JSON.stringify({
+              text: inputText.value,
+              author: inputAuthor.value,
+             }))
+        xhr.onload = () => {
+          if (Number(xhr.responseText) !== 201) {
+            alert('Произошла ошибка при отправке.')
+          } else {
+            inputText.value = ''
+            inputAuthor.value = ''
+            location.href = '!{serverSideRenderUrl + '/message-board'}'
+          }
+
+        }
+      }
   body
     div
       nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
         div#navbarCollapse.collapse.navbar-collapse
           ul.navbar-nav.mr-auto
             li.nav-item
-              a.nav-link(href= clientSideRenderUrl + "/") About
+              a.nav-link.active(href= serverSideRenderUrl + "/message-board") message board
             li.nav-item
-              a.nav-link(href= clientSideRenderUrl + "/users" ) Users
-            li.nav-item
-              a.nav-link.active(href= serverSideRenderUrl + "/ceo") CEO
+              a.nav-link(href= clientSideRenderUrl + "/average-numbers" ) average numbers
+    div(style='margin-top:8ex; margin-left:3ex;')
+      each message in messages
+        div
+          p(style='margin: 0.1ex;') #{message.author}
+          p #{message.text}
+    div(style="margin-left:3ex;")
+      input(id="input-text" style="margin-right:2ex;" placeholder="text")
+      input(id="input-author" style="margin-right:2ex;" placeholder="author")
+      button.btn.btn-success(id="add-message" onclick="addMessage()") add
+

@@ -23,16 +23,17 @@ const router = new Router()
 
 const pug = require('pug')
 
-router.get('/public/ceo', async ctx => {
-
-  ctx.body = pug.renderFile('./templates/main.pug',{clientSideRenderUrl:'http://localhost:8080/#/private',serverSideRenderUrl:'http://localhost:3002/public',})
+const messages =[ {author: 'Ivan', text: 'The sun is shining brightly'}]
+router.get('/public/message-board', async ctx => {
+  ctx.body = pug.renderFile('./templates/main.pug',{messages, apiUrl:'http://localhost:3002', clientSideRenderUrl:'http://localhost:8080/#/private',serverSideRenderUrl:'http://localhost:3002/public',})
 })
 
-router.post('/users', async ctx => {
-  console.log('ctx.request.body ->', await ctx.request.body) // debug
+router.post('/add-new-message', async ctx => {
+  const {text,author} = ctx.request.body
+  console.log('{text,author} ->', {text,author}); // debug
+  messages.push({text,author} )
 
-  // console.log('ctx.body ->', ctx.body) // debug
-  ctx.response.body = 'ok2'
+  ctx.body = 201
 })
 
 router.put('/user/:userId', async ctx => {

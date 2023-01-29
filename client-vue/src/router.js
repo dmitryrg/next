@@ -6,15 +6,10 @@ Vue.use(Router)
 export default new Router({
   linkActiveClass: 'active',
   routes: [
-
     {
-      path: '/private/',
-      name: 'home',
-      component: () => import('@/views/Home.vue')},
-    {
-      path: '/private/users',
-      name: 'users',
-      component: () => import('@/views/UsersTop.vue')
+      path: '/private/average-numbers',
+      name: 'averageNumbers',
+      component: () => import('@/views/AverageNumbers.vue')
 
     }
   ]
