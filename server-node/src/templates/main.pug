@@ -1,0 +1,19 @@
+doctype html
+html
+  head
+    title Next
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width,initial-scale=1.0")
+    link(rel="stylesheet", href="/bootstrap.css")
+  body
+    div
+      nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+        div#navbarCollapse.collapse.navbar-collapse
+          ul.navbar-nav.mr-auto
+            li.nav-item
+              a.nav-link(href= clientSideRenderUrl + "/") About
+            li.nav-item
+              a.nav-link(href= clientSideRenderUrl + "/users" ) Users
+            li.nav-item
+              a.nav-link.active(href= serverSideRenderUrl + "/ceo") CEO

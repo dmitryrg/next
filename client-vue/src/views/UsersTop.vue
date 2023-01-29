@@ -1,44 +1,58 @@
 <template lang="pug">
 div
   div
-    h4 Количество пользователей {{ amountUsersComputed }}
-    tag-users-low(:users="users")
-  button.btn.btn-success(type="button" @click="addUser") Add
+    input(type="text" @input="search = $event.target.value")
+    button(type="button" @click="findUsers") Найти
+    p(v-show="!hasData && users !== null && !isError") Не найдено
+    p(v-if="isError") {{users.err.message}}
+    table(v-if="hasData")
+      thead
+        tr
+          th
+            span Имя
+          th
+            span Фамилия
+          th
+      tbody
+        tr(v-for='user of users' :key='user.id')
+          td
+            span  {{ user.firstName }}
+          td
+            span  {{ user.lastName }}
 </template>
 
 <script>
-import UsersLow from '@/components/UsersLow.vue'
-
-import axios from 'axios'
-import config from '@/config.js'
+// import axios from 'axios'
 
 export default {
   name: 'UsersTop',
-  components: {
-    'tag-users-low': UsersLow
-  },
   data: () => {
     return {
-      users: []
+      users: [
+        {firstName:'Violetta', lastName:'Apple'}
+      ],
+      search: ''
     }
   },
   computed: {
-    amountUsersComputed() {
-      return this.users ? this.users.length : 0
+    hasData() {
+      return Array.isArray(this.users) && this.users.length > 0
+    },
+    isError() {
+      return this.users !== null && !Array.isArray(this.users)
     }
   },
-  mounted() {
-    this.load()
-  },
   methods: {
-    load() {
+    findUsers() {
+/*      const URL = 'http://localhost:3002/users'
       axios
-        .get(config.serverApi + '/users')
+        .post(URL, { search: this.search }) // search - строка квери запроса
         .then(response => response.data)
-        .then(users => (this.users = users))
-    },
-    addUser() {
-      this.$router.push({ path: '/users/new' })
+        .then(users => (this.users = users))*/
+      this.users = [
+        {firstName:'Fedor', lastName:'Sumkin'},
+        {firstName:'Stepan', lastName:'Razin'}
+      ]
     }
   }
 }
