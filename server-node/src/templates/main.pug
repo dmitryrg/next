@@ -15,6 +15,14 @@ html
         xhr.setRequestHeader('Content-type', 'application/json')
         const inputText = document.getElementById('input-text')
         const inputAuthor = document.getElementById('input-author')
+        if(!inputText.value) {
+          alert('The field "text" is empty')
+          return
+        }
+        if (!inputAuthor.value) {
+          alert('The field "author" is empty')
+          return
+        }
         xhr.send(
             JSON.stringify({
               text: inputText.value,
@@ -22,13 +30,12 @@ html
              }))
         xhr.onload = () => {
           if (Number(xhr.status) !== 201) {
-            alert('Произошла ошибка при отправке.')
-          } else {
-            inputText.value = ''
-            inputAuthor.value = ''
-            location.href = '!{serverSideRenderUrl + '/message-board'}'
+            alert(`Произошла ошибка. ${xhr.responseText}`)
+            return
           }
-
+          inputText.value = ''
+          inputAuthor.value = ''
+          location.href = '!{serverSideRenderUrl + '/message-board'}'
         }
       }
   body

@@ -3,7 +3,7 @@ div(style="margin-top:5em; margin-left-0em;")
   div
     p Определение среднего числа
     input(type="text" v-model="digit" placeholder="Введите число")
-    button(type="button" @click="calc") calc
+    button.btn.btn-success(type="button" @click="calc") calc
     div
       input(type="checkbox" v-model="isNegative")
       label(style="margin-left:0.3em;margin-right:1em;") negative
