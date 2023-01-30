@@ -11,51 +11,64 @@ const koaCors = require('@koa/cors')
 const Router = require('koa-router')
 const koaStatic = require('koa-static')
 
-
 const app = new Koa()
 
 app.use(favicon('../public/favicon.ico'))
 app.use(koaCors())
-app.use(koaStatic('../node_modules/bootstrap/dist/css/', { defer:true }));
+app.use(koaStatic('../node_modules/bootstrap/dist/css/', { defer: true }))
 app.use(bodyParser({ jsonLimit: '56kb' }))
 
 const router = new Router()
 
 const pug = require('pug')
 const config = require('./config.js')
-const {apiUrl,clientSideRenderUrl,serverSideRenderUrl} = config
-const messages =[ {author: 'Ivan', text: 'The sun is shining brightly'}]
-const calculations = [0,2,4,8,10]
+const { apiUrl, clientSideRenderUrl, serverSideRenderUrl } = config
+const messages = [{ author: 'Ivan', text: 'The sun is shining brightly' }]
+const calculations = [0, 2]
 router.get('/public/message-board', async ctx => {
-  ctx.body = pug.renderFile('./templates/main.pug',{messages, apiUrl, clientSideRenderUrl, serverSideRenderUrl})
+  ctx.body = pug.renderFile('./templates/main.pug', {
+    messages,
+    apiUrl,
+    clientSideRenderUrl,
+    serverSideRenderUrl
+  })
 })
 
 router.post('/api/add-new-message', ctx => {
-  const {text,author} = ctx.request.body
-  console.log('{text,author} ->', {text,author}); // debug
-  messages.push({text,author} )
+  const { text, author } = ctx.request.body
+  messages.push({ text, author })
 
   ctx.body = 'success'
   ctx.status = 201
 })
 
-router.get('/api/history', ctx => {
-  ctx.body = calculations.reduce((total,digit, index)=>{
-    if(index ===0) return total
-    total.push(    {id: index,
-    current:calculations[index],
-    previous:calculations[index-1],
-    average:(calculations[index]+ calculations[index-1])/2
+router.post('/api/calculation-maker', ctx => {
+  const res = (+ctx.request.body.digit + calculations.slice(-1)[0]) / 2
+  calculations.push(+ctx.request.body.digit)
+  ctx.body = res
+
+  ctx.status = 201
+})
+
+router.get('/api/calculation-history', ctx => {
+  ctx.body = calculations.reduce((total, digit, index) => {
+    if (index === 0) return total
+    total.push({
+      id: index,
+      current: calculations[index],
+      previous: calculations[index - 1],
+      average: (calculations[index] + calculations[index - 1]) / 2
     })
 
     return total
-  },[])
-  ctx.status = 201
-
+  }, [])
+  ctx.status = 200
 })
 
 // подцепляем роутер
 app.use(router.routes())
 
 // слушаем сервер
-app.listen(PORT,()=> {console.log(`Server starts on ${PORT} port`)})
+app.listen(PORT, () => {
+  console.log(`Server starts on ${PORT} port`)
+})

@@ -1,56 +1,103 @@
 <template lang="pug">
-div
+div(style="margin-top:5em; margin-left-0em;")
   div
-    //input(type="text" @input="search = $event.target.value")
-    //button(type="button" @click="findUsers") Найти
-    p(v-show="!hasData && calculations !== null && !isError") Не найдено
-    p(v-if="isError") {{calculations.err.message}}
-    table(v-if="hasData")
-      thead
-        tr
-          th
-            span Введенное
-          th
-            span Предыдущее
-          th
-            span Среднее
-      tbody
-        tr(v-for='calculation of calculations' :key='calculation.id')
-          td
-            span  {{ calculation.current }}
-          td
-            span  {{ calculation.previous }}
-          td
-            span  {{ calculation.average }}
+    p Определение среднего числа
+    input(type="text" v-model="digit" placeholder="Введите число")
+    button(type="button" @click="calc") calc
+    div
+      input(type="checkbox" v-model="isNegative")
+      label(style="margin-left:0.3em;margin-right:1em;") negative
+      input(type="checkbox" v-model="isFractional")
+      label(style="margin-left:0.3em;") fractional
+  div
+    p(v-if="isCurrentError") Данные текущих вычислений некорректны
+    tag-table-calculations(v-if="hasCurrentData" :calculations="currentCalculations")
+  div
+    p(style="margin-top:1.5em;") История вычислений
+    p(v-show="!hasHistoryData && historyCalculations !== null && !isHistoryError") Не найдено
+    p(v-if="isHistoryError") Поступившие исторические данные некорректны
+    tag-table-calculations(v-if="hasHistoryData" :calculations="historyCalculations")
+
 </template>
 
 <script>
 import axios from 'axios'
+import TableCalculations from '../components/TableCalculations.vue'
 const config = require('../config.js')
 export default {
   name: 'AverageNumbers',
+  components: {
+    'tag-table-calculations': TableCalculations
+  },
   data: () => {
     return {
-      calculations: null
+      historyCalculations: [],
+      currentCalculations: [],
+      digit: null,
+      isNegative: false,
+      isFractional: false
     }
   },
   computed: {
-    hasData() {
-      return Array.isArray(this.calculations) && this.calculations.length > 0
+    hasHistoryData() {
+      return Array.isArray(this.historyCalculations) && this.historyCalculations.length > 0
     },
-    isError() {
-      return this.calculations !== null && !Array.isArray(this.calculations)
+    isHistoryError() {
+      return this.historyCalculations !== null && !Array.isArray(this.historyCalculations)
+    },
+    hasCurrentData() {
+      return Array.isArray(this.currentCalculations) && this.currentCalculations.length > 0
+    },
+    isCurrentError() {
+      return this.currentCalculations !== null && !Array.isArray(this.currentCalculations)
     }
   },
+  // created() {},
   mounted() {
     this.load()
   },
   methods: {
     load() {
       axios
-        .get(config.apiUrl + '/history')
+        .get(config.apiUrl + '/calculation-history')
         .then(response => response.data)
-        .then(calculations => (this.calculations = calculations))
+        .then(calculations => (this.historyCalculations = calculations.reverse()))
+    },
+    calc() {
+      if (!this.digit) {
+        alert('The number is empty')
+        return
+      }
+      if (isNaN(this.digit)) {
+        alert('The value in number is not a number')
+        return
+      }
+      if (this.isNegative === +this.digit >= 0) {
+        alert('The number does not correspond to the negative factor')
+        return
+      }
+      if (this.isFractional !== this.digit.toString().includes('.')) {
+        alert('The number does not correspond to the fractional factor')
+        return
+      }
+      axios
+        .post(config.apiUrl + '/calculation-maker', { digit: this.digit })
+        .then(response => response.data)
+        .then(average => {
+          const allPrevious = [
+            ...this.historyCalculations.reverse(),
+            ...this.currentCalculations.reverse()
+          ]
+          this.currentCalculations.unshift({
+            current: this.digit,
+            previous: allPrevious.length ? allPrevious.slice(-1)[0].current : 0,
+            average,
+            id: allPrevious.length ? allPrevious.slice(-1)[0].id + 1 : 1
+          })
+          this.digit = null
+          this.isNegative = false
+          this.isFractional = false
+        })
     }
   }
 }

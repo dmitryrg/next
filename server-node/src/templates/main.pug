@@ -40,13 +40,13 @@ html
               a.nav-link.active(href= serverSideRenderUrl + "/message-board") message board
             li.nav-item
               a.nav-link(href= clientSideRenderUrl + "/average-numbers" ) average numbers
-    div(style='margin-top:8ex; margin-left:3ex;')
+    div(style='margin-top:5em; margin-left:3em;')
       each message in messages
         div
-          p(style='margin: 0.1ex;') #{message.author}
+          p(style='margin: 0.1em;') #{message.author}
           p #{message.text}
-    div(style="margin-left:3ex;")
-      input(id="input-text" style="margin-right:2ex;" placeholder="text")
-      input(id="input-author" style="margin-right:2ex;" placeholder="author")
+    div(style="margin-left:3em;")
+      input(id="input-text" style="margin-right:2em;" placeholder="text")
+      input(id="input-author" style="margin-right:2em;" placeholder="author")
       button.btn.btn-success(id="add-message" onclick="addMessage()") add
 
