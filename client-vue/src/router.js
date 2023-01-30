@@ -7,7 +7,7 @@ export default new Router({
   linkActiveClass: 'active',
   routes: [
     {
-      path: '/private/average-numbers',
+      path: '/average-numbers',
       name: 'averageNumbers',
       component: () => import('@/views/AverageNumbers.vue')
 

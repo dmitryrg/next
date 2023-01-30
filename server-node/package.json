@@ -4,17 +4,15 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "json-server --watch /db/users.json --port 3003&&node ./src/index.js"
+    "start-dev": "NODE_ENV=dev node ./src/index.js"
   },
   "dependencies": {
     "@koa/cors": "3.1.0",
     "bootstrap": "4.3.1",
-    "json-server": "0.17.1",
     "koa": "2.7.0",
     "koa-bodyparser": "4.2.1",
     "koa-favicon": "2.0.1",
     "koa-router": "7.4.0",
-    "koa-static": "^5.0.0",
     "pug": "3.0.2"
   },
   "devDependencies": {

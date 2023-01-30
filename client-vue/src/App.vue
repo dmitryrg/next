@@ -5,7 +5,7 @@
         ul.navbar-nav.mr-auto
           li.nav-item
             a.nav-link(:href="urlPublic") message board
-          router-link.nav-item(to="/private/average-numbers" tag="li")
+          router-link.nav-item(to="/average-numbers" tag="li")
             a.nav-link average numbers
           li.nav-item
             a.nav-link(:href="urlGit") git repository
@@ -19,7 +19,7 @@ export default {
   name: 'App',
   computed: {
     urlPublic() {
-      return `${config.serverSideRenderUrl}/message-board`
+      return `${config.backUrl}/message-board`
     },
     urlGit() {
       return `${config.gitRepositoryUrl}/`

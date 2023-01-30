@@ -1,39 +1,32 @@
-// cd vue-cli/server/serverKoa
-
 'use strict'
-
-const PORT = 3002
-
+const path = require('path')
 const Koa = require('koa')
 const favicon = require('koa-favicon')
 const bodyParser = require('koa-bodyparser')
 const koaCors = require('@koa/cors')
 const Router = require('koa-router')
-const koaStatic = require('koa-static')
 
 const app = new Koa()
 
-app.use(favicon('../public/favicon.ico'))
+const config = require('./config.js')
+const { backUrl, frontUrl, gitRepositoryUrl, serverPrefix, port } = config
+app.use(favicon(path.join(path.dirname(__dirname), 'public/favicon.ico')))
 app.use(koaCors())
-app.use(koaStatic('../node_modules/bootstrap/dist/css/', { defer: true }))
 app.use(bodyParser({ jsonLimit: '56kb' }))
 
-const router = new Router()
+const router = new Router({ prefix: serverPrefix })
 
 const pug = require('pug')
-const config = require('./config.js')
-const { apiUrl, clientSideRenderUrl, serverSideRenderUrl,gitRepositoryUrl } = config
 
 // хранилища данных
 const messages = [{ author: 'Ivan', text: 'The sun is shining brightly' }]
 const calculations = [0]
 
-router.get('/public/message-board', async ctx => {
-  ctx.body = pug.renderFile('./templates/main.pug', {
+router.get('/message-board', ctx => {
+  ctx.body = pug.renderFile(path.join(__dirname, 'templates/main.pug'), {
     messages,
-    apiUrl,
-    clientSideRenderUrl,
-    serverSideRenderUrl,
+    backUrl,
+    frontUrl,
     gitRepositoryUrl
   })
 })
@@ -90,10 +83,8 @@ router.get('/api/calculation-history', ctx => {
   ctx.status = 200
 })
 
-// подцепляем роутер
 app.use(router.routes())
 
-// слушаем сервер
-app.listen(PORT, () => {
-  console.log(`Server starts on ${PORT} port`)
+app.listen(port, () => {
+  console.log(`Server starts on ${port} port`)
 })

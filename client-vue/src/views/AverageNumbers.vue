@@ -58,7 +58,7 @@ export default {
   methods: {
     load() {
       axios
-        .get(config.apiUrl + '/calculation-history')
+        .get(config.backUrl + '/api/calculation-history')
         .then(response => response.data)
         .then(calculations => (this.historyCalculations = calculations.reverse()))
     },
@@ -80,7 +80,7 @@ export default {
         return
       }
       axios
-        .post(config.apiUrl + '/calculation-maker', { digit: this.digit })
+        .post(config.backUrl + '/api/calculation-maker', { digit: this.digit })
         .then(response => response.data)
         .then(average => {
           const allPrevious = [
