@@ -22,7 +22,7 @@ const router = new Router()
 
 const pug = require('pug')
 const config = require('./config.js')
-const { apiUrl, clientSideRenderUrl, serverSideRenderUrl } = config
+const { apiUrl, clientSideRenderUrl, serverSideRenderUrl,gitRepositoryUrl } = config
 
 // хранилища данных
 const messages = [{ author: 'Ivan', text: 'The sun is shining brightly' }]
@@ -33,7 +33,8 @@ router.get('/public/message-board', async ctx => {
     messages,
     apiUrl,
     clientSideRenderUrl,
-    serverSideRenderUrl
+    serverSideRenderUrl,
+    gitRepositoryUrl
   })
 })
 

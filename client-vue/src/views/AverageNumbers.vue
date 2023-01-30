@@ -14,7 +14,7 @@ div(style="margin-top:5em; margin-left-0em;")
     tag-table-calculations(v-if="hasCurrentData" :calculations="currentCalculations")
   div
     p(style="margin-top:1.5em;") История вычислений
-    p(v-show="!hasHistoryData && historyCalculations !== null && !isHistoryError") Не найдено
+    p(v-show="!hasHistoryData && historyCalculations !== null && !isHistoryError") Отсутствует
     p(v-if="isHistoryError") Поступившие исторические данные некорректны
     tag-table-calculations(v-if="hasHistoryData" :calculations="historyCalculations")
 
@@ -52,7 +52,6 @@ export default {
       return this.currentCalculations !== null && !Array.isArray(this.currentCalculations)
     }
   },
-  // created() {},
   mounted() {
     this.load()
   },

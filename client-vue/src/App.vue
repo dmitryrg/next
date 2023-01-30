@@ -7,17 +7,22 @@
             a.nav-link(:href="urlPublic") message board
           router-link.nav-item(to="/private/average-numbers" tag="li")
             a.nav-link average numbers
+          li.nav-item
+            a.nav-link(:href="urlGit") git repository
     main.container(role="main")
       router-view
 </template>
 
 <script>
-const config  = require('./config.js')
+const config = require('./config.js')
 export default {
   name: 'App',
   computed: {
     urlPublic() {
       return `${config.serverSideRenderUrl}/message-board`
+    },
+    urlGit() {
+      return `${config.gitRepositoryUrl}/`
     }
   }
 }
